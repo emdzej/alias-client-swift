@@ -17,6 +17,10 @@ public actor AliasClient {
     public nonisolated let url: URL
     public nonisolated let key: String
     public nonisolated let appVersion: String?
+    /// The app's language ("pl", "en-GB"), sent as Accept-Language: the product's own words (its name,
+    /// fields, contact consent) come in it where the product has them, and the service's refusals. nil:
+    /// none sent.
+    public nonisolated let language: String?
     private let store: IdentityStore
     private let session: URLSession
     private let contextOf: (@Sendable () -> JSONObject?)?
@@ -27,12 +31,18 @@ public actor AliasClient {
 
     /// - context, telemetry: the product's context (its fields) and telemetry for a report, asked at each.
     /// - redact: apply the product's rules before sending (the service applies them anyway).
+    /// - language: sent as Accept-Language (default: the app's language, `defaultLanguage`; nil: none).
     public init(url: URL, key: String, store: IdentityStore = MemoryIdentityStore(), appVersion: String? = nil,
                 context: (@Sendable () -> JSONObject?)? = nil, telemetry: (@Sendable () -> JSONObject?)? = nil,
-                redact: Bool = true, session: URLSession = .shared) {
+                redact: Bool = true, language: String? = AliasClient.defaultLanguage, session: URLSession = .shared) {
         self.url = url; self.key = key; self.store = store; self.appVersion = appVersion
+        self.language = language.flatMap { $0.isEmpty ? nil : $0 }
         self.contextOf = context; self.telemetryOf = telemetry; self.redacts = redact; self.session = session
     }
+
+    /// The language the app's shown in: its preferred localization (of those it has), else the user's
+    /// first preferred language.
+    public static var defaultLanguage: String? { Bundle.main.preferredLocalizations.first ?? Locale.preferredLanguages.first }
 
     // --- the identity ---
 
@@ -298,6 +308,7 @@ public actor AliasClient {
 
     private func headers(_ id: Identity?) -> [String: String] {
         var h = ["X-Alias-Key": key]
+        if let language { h["Accept-Language"] = language }
         if let id { h["X-Alias-User"] = id.id; h["X-Alias-Secret"] = id.secret }
         return h
     }

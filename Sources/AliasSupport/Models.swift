@@ -68,6 +68,8 @@ public struct Product: Codable, Sendable {
     public let conversations: Conversations?
     /// Live now: offer "Talk live" when `userMayAsk`; `available`: someone at the desk is taking them.
     public let live: Live?
+    /// The language its words (name, fields' labels, consent) came in, of those it has ("" or nil: as written).
+    public let lang: String?
 
     public struct Conversations: Codable, Sendable {
         public let mode: Mode
@@ -84,7 +86,7 @@ public struct Product: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case id, name, privacyURL = "privacy_url", branding, fields, contact, contactKinds = "contact_kinds",
              contactConsent = "contact_consent", redact, removable, attachments, formats, telemetryMax = "telemetry_max",
-             conversations, live
+             conversations, live, lang
     }
 }
 

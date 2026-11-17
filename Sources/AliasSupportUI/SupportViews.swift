@@ -16,15 +16,15 @@ public func aliasText(_ text: String, format: Format?) -> AttributedString {
 }
 
 /// The sheet to drop in: a report (with the screenshot, if you pass one, which the user can black out
-/// first), and their reports with support's answers.
+/// first), and their reports with support's answers. Its words: `labels`, else the client's language's.
 public struct AliasSupportView: View {
     let client: AliasClient
     let screenshot: CGImage?
     let labels: AliasLabels
     let onSent: (Ticket) -> Void
 
-    public init(client: AliasClient, screenshot: CGImage? = nil, labels: AliasLabels = AliasLabels(), onSent: @escaping (Ticket) -> Void = { _ in }) {
-        self.client = client; self.screenshot = screenshot; self.labels = labels; self.onSent = onSent
+    public init(client: AliasClient, screenshot: CGImage? = nil, labels: AliasLabels? = nil, onSent: @escaping (Ticket) -> Void = { _ in }) {
+        self.client = client; self.screenshot = screenshot; self.labels = labels ?? AliasLabels(language: client.language); self.onSent = onSent
     }
 
     public var body: some View {
@@ -60,8 +60,8 @@ public struct AliasReportView: View {
     @State private var problem: String?
     @State private var sent: Ticket?
 
-    public init(client: AliasClient, screenshot: CGImage? = nil, labels: AliasLabels = AliasLabels(), onSent: @escaping (Ticket) -> Void = { _ in }) {
-        self.client = client; self.screenshot = screenshot; self.labels = labels; self.onSent = onSent
+    public init(client: AliasClient, screenshot: CGImage? = nil, labels: AliasLabels? = nil, onSent: @escaping (Ticket) -> Void = { _ in }) {
+        self.client = client; self.screenshot = screenshot; self.labels = labels ?? AliasLabels(language: client.language); self.onSent = onSent
     }
 
     public var body: some View {
@@ -180,7 +180,7 @@ public struct AliasTicketsView: View {
     @State private var tickets: [Ticket] = []
     @State private var loaded = false
 
-    public init(client: AliasClient, labels: AliasLabels = AliasLabels()) { self.client = client; self.labels = labels }
+    public init(client: AliasClient, labels: AliasLabels? = nil) { self.client = client; self.labels = labels ?? AliasLabels(language: client.language) }
 
     public var body: some View {
         List(tickets) { t in
@@ -215,7 +215,7 @@ public struct AliasTicketView: View {
     @State private var lastTyped = Date.distantPast
     @State private var problem: String?
 
-    public init(client: AliasClient, id: Int, labels: AliasLabels = AliasLabels()) { self.client = client; self.id = id; self.labels = labels }
+    public init(client: AliasClient, id: Int, labels: AliasLabels? = nil) { self.client = client; self.id = id; self.labels = labels ?? AliasLabels(language: client.language) }
 
     public var body: some View {
         VStack(spacing: 0) {

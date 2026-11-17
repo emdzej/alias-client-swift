@@ -1,42 +1,6 @@
+import AliasSupport
 import CoreGraphics
 import SwiftUI
-
-/// The words the views show: English by default, yours to translate.
-public struct AliasLabels: Sendable {
-    public var redactTitle = "Black out what you don't want to send"
-    public var box = "Box"
-    public var brush = "Brush"
-    public var undo = "Undo"
-    public var clear = "Clear"
-    public var cancel = "Cancel"
-    public var done = "Done"
-    public var reportTitle = "Report a problem"
-    public var notePrompt = "What happened?"
-    public var screenshot = "Screenshot"
-    public var includeScreenshot = "Send the screenshot"
-    public var blackOut = "Black out parts"
-    public var whatsSent = "What's sent with it"
-    public var nothingElse = "Nothing else."
-    public var contactTitle = "A way to reach you (optional)"
-    public var contactPlaceholder = "you@example.com"
-    public var agree = "I agree"
-    public var send = "Send"
-    public var sending = "Sending…"
-    public var sent = "Sent. You'll see support's answer here."
-    public var yourReports = "Your reports"
-    public var noReports = "No reports yet."
-    public var replyPrompt = "Write a reply"
-    public var talkLive = "Talk live"
-    public var liveAsked = "Asked: someone will join when they can."
-    public var liveNow = "Live: support is here."
-    public var typing = "Support is typing…"
-    public var agent = "Answered by an agent, not a person"
-    public var support = "Support"
-    public var you = "You"
-    public var statusWords: [String: String] = ["open": "Open", "in_progress": "In progress", "waiting": "Waiting on you",
-                                                 "resolved": "Resolved", "closed": "Closed"]
-    public init() {}
-}
 
 /// The screenshot editor: solid boxes and a brush over the image, undo and clear; Done gives the redacted
 /// JPEG (a new image: no metadata), Cancel nil.

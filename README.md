@@ -30,6 +30,27 @@ let ticket = try await alias.report("The door won't open: ![](attachment:door.jp
 for await u in await alias.watch() where u.kind == "answer" { notify("Support answered #\(u.ticket)") }
 ```
 
+## Language
+
+`AliasClient(…, language: "pl")` is sent as `Accept-Language` on every call. The default,
+`AliasClient.defaultLanguage`, is the app's: its preferred localization (`Bundle.main.preferredLocalizations`,
+so the app lists Polish among its localizations to get it), else the user's first preferred language;
+`nil` sends none. The product's own words (its name, its fields' labels, its contact consent) come in it
+where the product has them, else as written (`Product.lang` says which: `""` for as written); the built-in
+consent text and the service's refusals come in it where ALIAS has them. A consent's `version` is its
+text's, so the Polish text is agreed to as itself.
+
+The views' words are `AliasLabels`: built in, English (`en`) and Polish (`pl`) (`AliasLabels.languages`);
+the views take the client's language unless you pass `labels`, and any other language gets English. Change
+any of them, or bring another language:
+
+```swift
+var words = AliasLabels(language: "pl")      // "pl-PL" is fine
+words.reportTitle = "Zgłoś błąd w grze"
+AliasSupportView(client: alias, labels: words)
+words.newAnswers(3)                          // "3 nowe odpowiedzi": plurals by the language's rules
+```
+
 ## The identity
 
 The service makes it (an id and a secret, from a secure random source); the client asks for it the first
@@ -88,6 +109,6 @@ not, yet.
 ## Tests
 
 `swift test` (here, in clients/swift) builds alias-support from this repository with Go and runs against
-it: every operation, the identity and proof of work, reports with attachments, redaction, answers and
+it: every operation, the identity and proof of work, the language, reports with attachments, redaction, answers and
 live, contact, transfers, a revoked key. And on the device: the redaction vectors, the editor's drawing,
-the screenshot's metadata gone, the stream's parsing, the keychain.
+the screenshot's metadata gone, the stream's parsing, the keychain, the views' words and plurals.
